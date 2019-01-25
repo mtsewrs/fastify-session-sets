@@ -1,0 +1,32 @@
+{
+  "name": "fastify-session-sets",
+  "version": "1.0.0",
+  "main": "dist/fastify-session-sets.js",
+  "umd:main": "dist/fastify-session-sets.umd.js",
+  "module": "dist/fastify-session-sets.mjs",
+  "source": "src/fastify-session-sets.js",
+  "dependencies": {
+    "fastify": "^1.13.4",
+    "fastify-cookie": "^2.1.5",
+    "fastify-plugin": "^1.4.0",
+    "fastify-session-sets": "^1.0.0",
+    "ioredis": "^4.5.1",
+    "lodash.uniq": "^4.5.0",
+    "ms": "^2.1.1"
+  },
+  "devDependencies": {
+    "@types/ioredis": "^4.0.5",
+    "@types/jest": "^23.3.13",
+    "jest": "^23.6.0",
+    "microbundle": "^0.9.0",
+    "supertest": "^3.4.2",
+    "ts-jest": "^23.10.5",
+    "ts-node": "^8.0.1",
+    "typescript": "^3.2.4"
+  },
+  "scripts": {
+    "build": "microbundle build --target node --external fastify,fastify-plugin,ioredis,crypto,ms,lodash.uniq -i index.ts",
+    "test": "jest --watchAll --verbose=false",
+    "server": "ts-node server/server.ts"
+  }
+}

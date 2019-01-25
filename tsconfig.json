@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+      "moduleResolution": "node",
+      "lib": ["es2015"],
+      "target": "esnext",
+      "downlevelIteration": true,
+      "esModuleInterop": true
+    }
+  }
