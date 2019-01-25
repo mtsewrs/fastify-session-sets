@@ -34,7 +34,7 @@ export default class Session {
     this._options = options;
   }
 
-  private _getSessionId() {
+  private getSessionId() {
     const options = this._options;
     return (this._id =
       this._id ||
@@ -42,44 +42,44 @@ export default class Session {
       this._store.createSessionId(options.byteLength));
   }
 
-  private _setCookie(unset?) {
+  private setCookie(unset?) {
     const options = this._options;
-    const session_id = this._getSessionId();
+    const session_id = this.getSessionId();
     this._reply.setCookie(options.key, unset ? '' : session_id, options)
   }
 
   getKey() {
-    return this._store.getSessionKey(this._getSessionId());
+    return this._store.getSessionKey(this.getSessionId());
   }
 
-  get(fields) {
-    const session_id = this._getSessionId();
+  get(fields?) {
+    const session_id = this.getSessionId();
     return this._store
       .get(session_id, fields ? uniq(fields.concat('id')) : null)
   }
 
   set(values, maxAge?) {
-    this._setCookie();
-    const session_id = this._getSessionId();
+    this.setCookie();
+    const session_id = this.getSessionId();
     return this._store.set(session_id, values, maxAge);
   }
 
   unset(fields, maxAge) {
-    this._setCookie();
-    const session_id = this._getSessionId();
+    this.setCookie();
+    const session_id = this.getSessionId();
     return this._store.unset(session_id, fields, maxAge);
   }
 
   touch(maxAge) {
-    this._setCookie();
-    const session_id = this._getSessionId();
+    this.setCookie();
+    const session_id = this.getSessionId();
     return this._store.touch(session_id, maxAge);
   }
 
   delete() {
     this._id = null;
-    this._setCookie(true);
-    const session_id = this._getSessionId();
+    this.setCookie(true);
+    const session_id = this.getSessionId();
     return this._store.delete(session_id);
   }
 }

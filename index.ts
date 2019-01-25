@@ -31,22 +31,19 @@ export default fp((fastify: DecoratedInstance, options: any, next) => {
   const store = new Store(options);
 
   fastify.decorate('createSession', (req, reply) => {
-    return {
-      session: new Session(req, reply, store, options),
-      store,
-      options,
-      getReferenceKey
-    };
+    return new Session(req, reply, store, options);
   });
 
   fastify.addHook('preHandler', (request: CostumRequest, reply, done) => {
-    request.session = fastify.createSession(request, reply);
+    const FastifySession = fastify.createSession(request, reply);
+    request.session = Object.assign(FastifySession, {
+      store,
+      options
+    })
     done();
   });
 
   next();
-
-  function getReferenceKey(field, value) {
-    return store.getReferenceKey(field, value);
-  }
 });
+
+export { Session, Store}

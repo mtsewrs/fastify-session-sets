@@ -1,28 +1,36 @@
 import fastify from 'fastify';
 import * as http from 'http';
-import FastifySession from 'fastify-session-sets';
+import FastifySession, { Session } from '../index';
 
 interface CostumRequest extends fastify.FastifyRequest<http.IncomingMessage> {
   session: any;
-  cookies: any
+  cookies: any;
+  store: any;
 }
 
 const app = fastify();
 
-app
-  .register(require('fastify-cookie'))
-  .register(FastifySession);
+app.register(require('fastify-cookie')).register(FastifySession, {
+  references: {
+    user_id: {}
+  }
+});
 
 app.get('/set', async (req: CostumRequest) => {
-  await req.session.session.set({
+  await req.session.set({
     user_id: 2
-  })
+  });
   return { status: 'ok' };
 });
 
 app.get('/get', async (req: CostumRequest) => {
-  const session = await req.session.session.get()
+  const session = await req.session.get();
   return { data: session };
 });
 
-app.listen(8080)
+app.get('/delete_all', async (req: CostumRequest) => {
+  const status = await req.session.store.delete_all('user_id', 2);
+  return { status: status };
+});
+
+app.listen(8080);
