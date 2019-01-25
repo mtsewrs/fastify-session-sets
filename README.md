@@ -20,9 +20,11 @@ import FastifySession from 'fastify-session-sets';
 
 const app = fastify();
 
-app
-  .register(require('fastify-cookie'))
-  .register(require('fastify-session-sets'));
+app.register(require('fastify-cookie')).register(FastifySession, {
+  references: {
+    user_id: {}
+  }
+});
 
 app.get('/set', async (req) => {
   await req.session.set({
