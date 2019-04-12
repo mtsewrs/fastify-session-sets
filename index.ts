@@ -23,6 +23,7 @@ interface DecoratedInstance
 
 export default fp((fastify: DecoratedInstance, options: any, next) => {
   options.key = options.key || 'session-id';
+  options.secretKey = options.secretKey || 'super-secret-key';
   options.overwrite = true;
   options.httpOnly = options.httpOnly !== false;
   options.signed = options.signed !== false;

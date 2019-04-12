@@ -1,17 +1,18 @@
 import uniq from 'lodash.uniq';
 import * as Fastify from 'fastify';
 import * as http from 'http';
+import { sign, unsign } from 'cookie-signature';
 
 interface Cookie {
-    [key: string]: any;
+  [key: string]: any;
 }
 
 interface CostumRequest extends Fastify.FastifyRequest<http.IncomingMessage> {
-    cookies: Cookie;
+  cookies: Cookie;
 }
 
 interface CostumReply extends Fastify.FastifyReply<http.ServerResponse> {
-    setCookie: (...opt) => void;
+  setCookie: (...opt) => void;
 }
 
 export default class Session {
@@ -22,12 +23,7 @@ export default class Session {
   _req: CostumRequest;
   _reply: CostumReply;
 
-  constructor(
-    req: CostumRequest,
-    reply: CostumReply,
-    store,
-    options
-  ) {
+  constructor(req: CostumRequest, reply: CostumReply, store, options) {
     this._req = req;
     this._reply = reply;
     this._store = store;
@@ -38,14 +34,22 @@ export default class Session {
     const options = this._options;
     return (this._id =
       this._id ||
-      this._req.cookies[options.key] ||
+      (this._req.cookies[options.key] &&
+        unsign(this._req.cookies[options.key], options.secretKey)) ||
       this._store.createSessionId(options.byteLength));
   }
 
-  private setCookie(unset?) {
+  setCostumCookie(name: string, value: string, unset?: boolean) {
+    const options = this._options;
+    const signedId = sign(value, this._options.secretKey);
+    this._reply.setCookie(name, unset ? '' : signedId, options);
+  }
+
+  private setCookie(unset?: boolean) {
     const options = this._options;
     const session_id = this.getSessionId();
-    this._reply.setCookie(options.key, unset ? '' : session_id, options)
+    const signedId = sign(session_id, this._options.secretKey);
+    this._reply.setCookie(options.key, unset ? '' : signedId, options);
   }
 
   getKey() {
@@ -54,8 +58,10 @@ export default class Session {
 
   get(fields?) {
     const session_id = this.getSessionId();
-    return this._store
-      .get(session_id, fields ? uniq(fields.concat('id')) : null)
+    return this._store.get(
+      session_id,
+      fields ? uniq(fields.concat('id')) : null
+    );
   }
 
   set(values, maxAge?) {

@@ -1,6 +1,6 @@
 import fastify from 'fastify';
 import * as http from 'http';
-import FastifySession, { Session } from '../index';
+import FastifySession from '../index';
 
 interface CostumRequest extends fastify.FastifyRequest<http.IncomingMessage> {
   session: any;
@@ -24,13 +24,13 @@ app.get('/set', async (req: CostumRequest) => {
 });
 
 app.get('/get', async (req: CostumRequest) => {
-  const session = await req.session.get();
-  return { data: session };
+  const data = await req.session.get();
+  return { data };
 });
 
 app.get('/delete_all', async (req: CostumRequest) => {
   const status = await req.session.store.delete_all('user_id', 2);
-  return { status: status };
+  return { status };
 });
 
 app.listen(8080);
