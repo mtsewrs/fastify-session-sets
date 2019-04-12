@@ -46,6 +46,17 @@ export default class Store {
     return true;
   }
 
+  public async getActiveSessions(field, value) {
+    const key = this.getReferenceKey(field, value);
+    const session_ids = await this.client.smembers(key);
+    return await Promise.all(
+      session_ids.map(session_id => {
+        // deletes the session and removes the session from all the referenced sets
+        return this.get(session_id);
+      })
+    );
+  }
+
   createSessionId() {
     return randomBytes(this.byteLength).toString('base64');
   }
@@ -58,7 +69,7 @@ export default class Store {
     return `${this.prefix}:${field}:${value}`;
   }
 
-  get(session_id, fields: string) {
+  get(session_id, fields?: string) {
     const key = this.getSessionKey(session_id);
     if (!Array.isArray(fields)) return this.client.hgetall(key);
     return this.client.hmget(key, fields).then(values => {

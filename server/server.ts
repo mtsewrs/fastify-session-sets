@@ -24,7 +24,9 @@ app.get('/set', async (req: CostumRequest) => {
 });
 
 app.get('/get', async (req: CostumRequest) => {
-  const data = await req.session.get();
+  const { user_id } = await req.session.get();
+  const data = await req.session.store.getActiveSessions('user_id', user_id);
+  console.log(data)
   return { data };
 });
 
@@ -33,4 +35,4 @@ app.get('/delete_all', async (req: CostumRequest) => {
   return { status };
 });
 
-app.listen(8080);
+app.listen(8081);
