@@ -45,6 +45,11 @@ export default class Session {
     this._reply.setCookie(name, unset ? '' : signedId, options);
   }
 
+  getCookie(name: string){
+    const options = this._options;
+    return this._req.cookies[name] && unsign(this._req.cookies[name], options.secretKey)
+  }
+
   private setCookie(unset?: boolean) {
     const options = this._options;
     const session_id = this.getSessionId();
