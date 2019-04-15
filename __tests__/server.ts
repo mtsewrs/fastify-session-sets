@@ -15,18 +15,24 @@ app
   .register(FastifySession);
 
 app.get('/set', async (req: CostumRequest) => {
-  await req.session.session.set({
+  await req.session.set({
     user_id: 1
   })
-  const session = await req.session.session.get()
+  const session = await req.session.get()
 
   return { data: session };
 });
 
 describe('Server', () => {
-  test('should respond as expected', async () => {
-    await app.ready();
-    const response = await request(app.server).get('/set');
+
+  const server = request(app.server);
+
+  beforeAll(() => {
+    return app.ready();
+  })
+
+  it('should have a session', async () => {
+    const response = await server.get('/set');
     expect(response.status).toBe(200);
     expect(response.type).toBe('application/json');
     expect(response.body.data.user_id).toBe('1');
