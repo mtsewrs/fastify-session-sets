@@ -1,6 +1,6 @@
 import fastify from 'fastify';
 import * as http from 'http';
-import FastifySession from '../index';
+import { session } from '../index';
 
 interface CostumRequest extends fastify.FastifyRequest<http.IncomingMessage> {
   session: any;
@@ -10,7 +10,7 @@ interface CostumRequest extends fastify.FastifyRequest<http.IncomingMessage> {
 
 const app = fastify();
 
-app.register(require('fastify-cookie')).register(FastifySession, {
+app.register(require('fastify-cookie')).register(session, {
   references: {
     user_id: {}
   }

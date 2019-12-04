@@ -11,9 +11,9 @@ interface CostumRequest extends fastify.FastifyRequest<http.IncomingMessage> {
 
 interface DecoratedInstance
   extends fastify.FastifyInstance<
-    http.Server,
-    http.IncomingMessage,
-    http.ServerResponse
+  http.Server,
+  http.IncomingMessage,
+  http.ServerResponse
   > {
   createSession: (
     request: fastify.FastifyRequest<http.IncomingMessage>,
@@ -21,7 +21,7 @@ interface DecoratedInstance
   ) => void;
 }
 
-export default fp((fastify: DecoratedInstance, options: any, next) => {
+export const session = fp((fastify: DecoratedInstance, options: any, next) => {
   options.key = options.key || 'session-id';
   options.secretKey = options.secretKey || 'super-secret-key';
   options.overwrite = true;
@@ -47,4 +47,4 @@ export default fp((fastify: DecoratedInstance, options: any, next) => {
   next();
 });
 
-export { Session, Store}
+export { Session, Store }
