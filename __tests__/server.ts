@@ -1,7 +1,7 @@
 import request from 'supertest';
 import fastify from 'fastify';
 import * as http from 'http';
-import FastifySession from '../index';
+import { session } from '../index';
 
 interface CostumRequest extends fastify.FastifyRequest<http.IncomingMessage> {
   session: any;
@@ -12,7 +12,7 @@ const app = fastify();
 
 app
   .register(require('fastify-cookie'))
-  .register(FastifySession);
+  .register(session);
 
 app.get('/set', async (req: CostumRequest) => {
   await req.session.set({
