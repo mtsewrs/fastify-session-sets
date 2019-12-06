@@ -37,6 +37,11 @@ export default class Session {
       this._store.createSessionId(options.byteLength));
   }
 
+  setCostumCookie(name: string, value: string, unset?: boolean) {
+    const options = this._options;
+    this._reply.setCookie(name, unset ? '' : value, options);
+  }
+
   private setCookie(unset?: boolean) {
     const options = this._options;
     const session_id = this.getSessionId();
