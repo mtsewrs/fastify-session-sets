@@ -16,11 +16,11 @@ Functional API
 
 ```javascript
 import fastify from 'fastify';
-import FastifySession from 'fastify-session-sets';
+import { session } from 'fastify-session-sets';
 
 const app = fastify();
 
-app.register(require('fastify-cookie')).register(FastifySession, {
+app.register(require('fastify-cookie')).register(session, {
   references: {
     user_id: {}
   }

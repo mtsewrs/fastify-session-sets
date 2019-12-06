@@ -1,7 +1,6 @@
 import uniq from 'lodash.uniq';
 import * as Fastify from 'fastify';
 import * as http from 'http';
-import { sign, unsign } from 'cookie-signature';
 
 interface Cookie {
   [key: string]: any;
@@ -34,27 +33,14 @@ export default class Session {
     const options = this._options;
     return (this._id =
       this._id ||
-      (this._req.cookies[options.key] &&
-        unsign(this._req.cookies[options.key], options.secretKey)) ||
+      this._req.cookies[options.key] ||
       this._store.createSessionId(options.byteLength));
-  }
-
-  setCostumCookie(name: string, value: string, unset?: boolean) {
-    const options = this._options;
-    const signedId = sign(value, this._options.secretKey);
-    this._reply.setCookie(name, unset ? '' : signedId, options);
-  }
-
-  getCookie(name: string){
-    const options = this._options;
-    return this._req.cookies[name] && unsign(this._req.cookies[name], options.secretKey)
   }
 
   private setCookie(unset?: boolean) {
     const options = this._options;
     const session_id = this.getSessionId();
-    const signedId = sign(session_id, this._options.secretKey);
-    this._reply.setCookie(options.key, unset ? '' : signedId, options);
+    this._reply.setCookie(options.key, unset ? '' : session_id, options);
   }
 
   getKey() {

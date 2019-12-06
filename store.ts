@@ -34,16 +34,21 @@ export default class Store {
   }
 
   public async delete_all(field, value) {
-    const key = this.getReferenceKey(field, value);
-    const session_ids = await this.client.smembers(key);
-    await Promise.all(
-      session_ids.map(session_id => {
-        // deletes the session and removes the session from all the referenced sets
-        return this.delete(session_id);
-      })
-    );
+    try {
+      const key = this.getReferenceKey(field, value);
+      const session_ids = await this.client.smembers(key);
+      await Promise.all(
+        session_ids.map(session_id => {
+          // deletes the session and removes the session from all the referenced sets
+          return this.delete(session_id);
+        })
+      );
 
-    return true;
+      return true;
+    } catch (error) {
+      console.error(error)
+      return false;
+    }
   }
 
   public async getActiveSessions(field, value) {
