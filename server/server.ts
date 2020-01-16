@@ -10,7 +10,8 @@ interface CostumRequest extends fastify.FastifyRequest<http.IncomingMessage> {
 
 const app = fastify();
 
-app.register(require('fastify-cookie')).register(session, {
+app.register(session, {
+  signed: true,
   references: {
     user_id: {}
   }
@@ -18,20 +19,19 @@ app.register(require('fastify-cookie')).register(session, {
 
 app.get('/set', async (req: CostumRequest) => {
   await req.session.set({
-    user_id: 2
+    user_id: 1
   });
-  return { status: 'ok' };
+  req.session.setCostumCookie('token', 'sometoken');
+  return await req.session.get();
 });
 
-app.get('/get', async (req: CostumRequest) => {
-  const { user_id } = await req.session.get();
-  const data = await req.session.store.getActiveSessions('user_id', user_id);
-  console.log(data)
-  return { data };
+app.get('/get', async (req: CostumRequest, reply: any) => {
+  const data = await req.session.get();
+  return JSON.stringify(data, null, 2);
 });
 
-app.get('/delete_all', async (req: CostumRequest) => {
-  const status = await req.session.store.delete_all('user_id', 2);
+app.get('/del', async (req: CostumRequest) => {
+  const status = await req.session.delete();
   return { status };
 });
 

@@ -12,6 +12,8 @@ interface CostumRequest extends Fastify.FastifyRequest<http.IncomingMessage> {
 
 interface CostumReply extends Fastify.FastifyReply<http.ServerResponse> {
   setCookie: (...opt) => void;
+  clearCookie: (...opt) => void;
+  unsignCookie: (...opt) => void;
 }
 
 export default class Session {
@@ -31,10 +33,16 @@ export default class Session {
 
   private getSessionId() {
     const options = this._options;
-    return (this._id =
-      this._id ||
-      this._req.cookies[options.key] ||
-      this._store.createSessionId(options.byteLength));
+    if (this._id) {
+      return this._id;
+    } else if (this._req.cookies[options.key] && options.signed) {
+      this._id = this._reply.unsignCookie(this._req.cookies[options.key]);
+    } else if (this._req.cookies[options.key]) {
+      this._id = this._req.cookies[options.key];
+    } else {
+      this._id = this._store.createSessionId(options.byteLength);
+    }
+    return this._id;
   }
 
   setCostumCookie(name: string, value: string, unset?: boolean) {
@@ -53,6 +61,7 @@ export default class Session {
   }
 
   get(fields?) {
+    this.setCookie();
     const session_id = this.getSessionId();
     return this._store.get(
       session_id,
@@ -67,20 +76,18 @@ export default class Session {
   }
 
   unset(fields, maxAge) {
-    this.setCookie();
     const session_id = this.getSessionId();
     return this._store.unset(session_id, fields, maxAge);
   }
 
   touch(maxAge) {
-    this.setCookie();
     const session_id = this.getSessionId();
     return this._store.touch(session_id, maxAge);
   }
 
   delete() {
     this._id = null;
-    this.setCookie(true);
+    this._reply.clearCookie(this._options.key);
     const session_id = this.getSessionId();
     return this._store.delete(session_id);
   }

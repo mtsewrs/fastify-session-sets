@@ -1,6 +1,6 @@
 {
   "name": "fastify-session-sets",
-  "version": "2.0.1",
+  "version": "2.6.0",
   "author": "https://github.com/mattiasewers",
   "repository": "https://github.com/mattiasewers/fastify-session-sets",
   "main": "dist/fastify-session-sets.js",
@@ -24,7 +24,7 @@
     "typescript": "^3.7.3"
   },
   "scripts": {
-    "build": "microbundle build --target node --external fastify,fastify-plugin,ioredis,crypto,ms,lodash.uniq,fastify-plugin -i index.ts",
+    "build": "microbundle build --target node --external fastify-cookie,fastify,fastify-plugin,ioredis,crypto,ms,lodash.uniq,fastify-plugin -i index.ts",
     "test": "jest --watchAll",
     "server": "ts-node server/server.ts"
   }

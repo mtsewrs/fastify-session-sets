@@ -11,8 +11,7 @@ interface CostumRequest extends fastify.FastifyRequest<http.IncomingMessage> {
 const app = fastify();
 
 app
-  .register(require('fastify-cookie'))
-  .register(session);
+  .register(session, { signed: true });
 
 app.get('/set', async (req: CostumRequest) => {
   await req.session.set({

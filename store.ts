@@ -3,11 +3,11 @@ import Redis from 'ioredis';
 import { getMS } from './utils';
 
 export default class Store {
-  client: Redis.Redis;
-  maxAge: number;
-  prefix: string;
-  references: Map<any, any>;
-  byteLength: number;
+  client?: Redis.Redis;
+  maxAge?: number;
+  prefix?: string;
+  references?: Map<any, any>;
+  byteLength?: number;
 
   constructor(options) {
     this.client = options.client || new Redis();
@@ -86,10 +86,9 @@ export default class Store {
     });
   }
 
-  set(session_id, values, maxAge) {
+  set(session_id?, values?, maxAge?) {
     const key = this.getSessionKey(session_id);
     const references = this.references;
-
     const HMSET = ['hmset', key, 'id', session_id];
     const multi = [HMSET, ['pexpire', key, getMS(maxAge || this.maxAge)]];
     for (const field of Object.keys(values)) {
@@ -104,7 +103,7 @@ export default class Store {
     return this.client.multi(multi).exec();
   }
 
-  unset(session_id, fields, maxAge) {
+  unset(session_id?, fields?, maxAge?) {
     const key = this.getSessionKey(session_id);
     const references = this.references;
 
@@ -134,7 +133,7 @@ export default class Store {
     });
   }
 
-  touch(session_id, maxAge) {
+  touch(session_id?, maxAge?) {
     const key = this.getSessionKey(session_id);
     return this.client.pexpire(key, getMS(maxAge || this.maxAge));
   }

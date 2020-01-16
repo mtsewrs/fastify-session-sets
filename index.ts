@@ -22,14 +22,19 @@ interface DecoratedInstance
 }
 
 export const session = fp((fastify: DecoratedInstance, options: any, next) => {
-  options.key = options.key || 'session-id';
-  options.secretKey = options.secretKey || 'super-secret-key';
+  options.key = options.key || 'sid';
+  options.secret = options.secret || 'session-secret';
   options.overwrite = true;
   options.httpOnly = options.httpOnly !== false;
   options.signed = options.signed !== false;
   options.maxAge = getMS(options.maxAge || '28 days');
 
   const store = new Store(options);
+
+  fastify.register(require('fastify-cookie'), {
+    secret: options.secret,
+    parseOptions: options,
+  })
 
   fastify.decorate('createSession', (req, reply) => {
     return new Session(req, reply, store, options);
