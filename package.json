@@ -1,31 +1,32 @@
 {
-  "name": "fastify-session-sets",
-  "version": "2.6.0",
-  "author": "https://github.com/mattiasewers",
-  "repository": "https://github.com/mattiasewers/fastify-session-sets",
-  "main": "dist/fastify-session-sets.js",
-  "dependencies": {
-    "cookie-signature": "^1.1.0",
-    "fastify": "^2.10.0",
-    "fastify-cookie": "^3.4.0",
-    "fastify-plugin": "^1.6.0",
-    "ioredis": "^4.14.1",
-    "lodash.uniq": "^4.5.0",
-    "ms": "^2.1.1"
-  },
-  "devDependencies": {
-    "@types/ioredis": "^4.0.5",
-    "@types/jest": "^23.3.13",
-    "jest": "^24.9.0",
-    "microbundle": "^0.11.0",
-    "supertest": "^3.4.2",
-    "ts-jest": "^24.2.0",
-    "ts-node": "^8.0.1",
-    "typescript": "^3.7.3"
-  },
-  "scripts": {
-    "build": "microbundle build --target node --external fastify-cookie,fastify,fastify-plugin,ioredis,crypto,ms,lodash.uniq,fastify-plugin -i index.ts",
-    "test": "jest --watchAll",
-    "server": "ts-node server/server.ts"
-  }
+	"name": "fastify-session-sets",
+	"version": "2.7.0",
+	"author": "https://github.com/mattiasewers",
+	"repository": "https://github.com/mattiasewers/fastify-session-sets",
+	"main": "dist/fastify-session-sets.js",
+	"dependencies": {
+		"cookie-signature": "^1.1.0",
+		"fastify": "2.15.2",
+		"fastify-cookie": "^3.4.0",
+		"fastify-plugin": "^1.6.0",
+		"ioredis": "^4.14.1",
+		"ioredis-mock": "^4.21.2",
+		"lodash.uniq": "^4.5.0",
+		"ms": "^2.1.1"
+	},
+	"devDependencies": {
+		"@types/ioredis": "^4.0.5",
+		"@types/jest": "^23.3.13",
+		"jest": "^24.9.0",
+		"microbundle": "^0.11.0",
+		"supertest": "^3.4.2",
+		"ts-jest": "^24.2.0",
+		"ts-node": "^8.0.1",
+		"typescript": "^3.7.3"
+	},
+	"scripts": {
+		"build": "microbundle build --target node --external fastify-cookie,fastify,fastify-plugin,ioredis,crypto,ms,lodash.uniq,fastify-plugin -i index.ts",
+		"test": "jest --watchAll",
+		"server": "ts-node server/server.ts"
+	}
 }
